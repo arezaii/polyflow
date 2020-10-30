@@ -1,4 +1,34 @@
-#define S0() {m_fp = fopen( m_filename.c_str(), "rb");\
+//
+// Created by arezaii on 10/30/20.
+//
+
+#include "simpleOpenReadCloseGen.hpp"
+
+
+void run_generated_code() {
+    S0();
+    for (int c1 = 0; c1 < m_numSubgrids; c1 += 1) {
+        S1(c1);
+        if (c1 + 1 == m_numSubgrids) S2(m_numSubgrids - 1);
+        S3(c1);
+        for (int c3 = 0; c3 < nz; c3 += 1)
+            for (int c5 = 0; c5 < ny; c5 += 1) {
+                S4(c1, c3, c5);
+                S5(c1, c3, c5);
+                S6(c1, c3, c5);
+                for (int c7 = 0; c7 <= nx; c7 += 1) {
+                    S7(c1, c3, c5, c7);
+                    S8(c1, c3, c5, c7);
+                    S9(c1, c3, c5, c7);
+                }
+            }
+    }
+    S10();
+}
+
+
+/**
+ * #define S0() {m_fp = fopen( m_filename.c_str(), "rb");\
 #              READDOUBLE(m_X,m_fp,errcheck); \
 #              READDOUBLE(m_Y,m_fp,errcheck);\
 #              READDOUBLE(m_Z,m_fp,errcheck);\
@@ -210,3 +240,5 @@ print WaR <= IslBefore;
 print "Codegen";
 codegen (IslSchedule * Domain);
 codegen (Schedule * Domain);
+ */
+

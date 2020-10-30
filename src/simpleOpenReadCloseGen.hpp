@@ -1,24 +1,47 @@
 //
-// Created by arezaii on 10/29/20.
+// Created by arezaii on 10/30/20.
 //
 
-#ifndef POLYFLOW_POLYFLOW_HPP
-#define POLYFLOW_POLYFLOW_HPP
-#include <cstdlib>
+#ifndef POLYFLOW_SIMPLEOPENREADCLOSEGEN_HPP
+#define POLYFLOW_SIMPLEOPENREADCLOSEGEN_HPP
+
+#include <iostream>
+#include <cstdint>
+#include <cstdio>
 #include "pfutil.hpp"
-#define WRITEINT(V,f) {uint32_t temp = bswap32(V); \
-                         fwrite(&temp, 4, 1, f);}
-#define READINT(V,f,err) {uint32_t buf; \
-                         err = fread(&buf, 4, 1, f);\
-                         uint32_t temp =  bswap32(buf);\
-                         V = (int)temp;}
-#define WRITEDOUBLE(V,f) {uint64_t t1 = *(uint64_t*)&V;\
-                         t1 =  bswap64(t1); \
-                         fwrite(&t1, 8, 1, f);}
-#define READDOUBLE(V,f,err) {uint64_t buf; \
-                         err = fread(&buf, 8, 1, f);\
-                         uint64_t temp =  bswap64(buf);\
-                         V = *(double*)&temp;}
+
+double m_X = 0.0;
+double m_Y = 0.0;
+double m_Z = 0.0;
+
+int m_nx = 0;
+int m_ny = 0;
+int m_nz = 0;
+
+double m_dX = 1.0;
+double m_dY = 1.0;
+double m_dZ = 1.0;
+
+int m_numSubgrids{};
+int m_p = 1;
+int m_q = 1;
+int m_r = 1;
+
+//Tracks if we own m_data, and need to free it.
+bool m_dataOwner = false;
+std::FILE* m_fp;
+int errcheck;
+double* m_data = nullptr;
+int j,k,i;
+int nsg;
+int x,y,z,nx,ny,nz,rx,ry,rz;
+int qq;
+int index;
+int read_count;
+uint64_t tmp;
+uint64_t* buf;
+std::string m_filename;
+
 #define S0() {m_fp = fopen( m_filename.c_str(), "rb"); \
               std::cout << "Begin Reading PFB " << m_filename<<std::endl;\
               READDOUBLE(m_X,m_fp,errcheck); \
@@ -62,5 +85,4 @@
 #define S10(){if(m_fp){std::fclose(m_fp);} \
             free(m_data);\
             std::cout<<"End Reading PFB File "<<m_filename<<"."<<std::endl;}
-
-#endif //POLYFLOW_POLYFLOW_HPP
+#endif //POLYFLOW_SIMPLEOPENREADCLOSEGEN_HPP
