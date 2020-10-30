@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.14)
 project(polyflow)
 
+include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(pfutil STATIC pfutil.cpp pfutil.hpp)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 
-add_executable(polyflow main.cpp polyflow.hpp)
-
-target_link_libraries(polyflow pfutil)
+add_subdirectory(src)

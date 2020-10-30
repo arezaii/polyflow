@@ -20,7 +20,7 @@
                          uint64_t temp =  bswap64(buf);\
                          V = *(double*)&temp;}
 #define S0() {m_fp = fopen( m_filename.c_str(), "rb"); \
-              std::cout << "Begin Reading PFB" << m_filename<<std::endl;\
+              std::cout << "Begin Reading PFB " << m_filename<<std::endl;\
               READDOUBLE(m_X,m_fp,errcheck); \
               READDOUBLE(m_Y,m_fp,errcheck);\
               READDOUBLE(m_Z,m_fp,errcheck);\
@@ -60,6 +60,7 @@
 #define S9(nsg,k,i,j){m_data[index+j] = *(double*)(&tmp);}
 
 #define S10(){if(m_fp){std::fclose(m_fp);} \
-            std::cout<<"End Reading PFB File"<<m_filename<<"."<<std::endl;}
+            free(m_data);\
+            std::cout<<"End Reading PFB File "<<m_filename<<"."<<std::endl;}
 
 #endif //POLYFLOW_POLYFLOW_HPP
