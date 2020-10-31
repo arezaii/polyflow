@@ -27,13 +27,10 @@ int m_p = 1;
 int m_q = 1;
 int m_r = 1;
 
-//Tracks if we own m_data, and need to free it.
-bool m_dataOwner = false;
+
 std::FILE* m_fp;
 int errcheck;
 double* m_data = nullptr;
-int j,k,i;
-int nsg;
 int x,y,z,nx,ny,nz,rx,ry,rz;
 int qq;
 int index;
@@ -63,26 +60,30 @@ std::string m_filename;
              READINT(nz,m_fp,errcheck);\
              READINT(rx,m_fp,errcheck);\
              READINT(ry,m_fp,errcheck);\
-             READINT(rz,m_fp,errcheck);}
+             READINT(rz,m_fp,errcheck);\
+             qq = z*m_nx*m_ny + y*m_nx + x;}
 #define S2(nsg){m_p = m_nx/nx;\
              m_q = m_ny/ny;\
              m_r = m_nz/nz;}
 
-#define S3(nsg){ qq = z*m_nx*m_ny + y*m_nx + x;}
 
-#define S4(nsg,k,i){index = qq+k*m_nx*m_ny+i*m_nx;}
 
-#define S5(nsg,k,i){buf= (uint64_t*)&(m_data[index]);}
+#define S3(nsg,k,i){index = qq+k*m_nx*m_ny+i*m_nx;\
+                    buf= (uint64_t*)&(m_data[index]);\
+                    read_count = fread(buf,8,nx,m_fp);}
 
-#define S6(nsg,k,i){read_count = fread(buf,8,nx,m_fp);}
 
-#define S7(nsg,k,i,j){tmp = buf[j];}
 
-#define S8(nsg,k,i,j){tmp = bswap64(tmp);}
+#define S4(nsg,k,i,j){tmp = buf[j];\
+                      tmp = bswap64(tmp);\
+                      m_data[index+j] = *(double*)(&tmp);}
 
-#define S9(nsg,k,i,j){m_data[index+j] = *(double*)(&tmp);}
 
-#define S10(){if(m_fp){std::fclose(m_fp);} \
+
+#define S5(){if(m_fp){std::fclose(m_fp);} \
+            for (int m =0;m<2*m_nx;m++){ \
+                std::cout<<"Cell "<<m<<": " <<m_data[m]<<std::endl; \
+            }                               \
             free(m_data);\
             std::cout<<"End Reading PFB File "<<m_filename<<"."<<std::endl;}
 #endif //POLYFLOW_SIMPLEOPENREADCLOSEGEN_HPP
