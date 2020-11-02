@@ -2,10 +2,10 @@
 // Created by arezaii on 10/30/20.
 //
 
-#include "simpleOpenReadCloseGen.hpp"
 
 
-void run_generated_code() {
+
+{
     S0();
     for (int c1 = 0; c1 < m_numSubgrids; c1 += 1) {
         S1(c1);
