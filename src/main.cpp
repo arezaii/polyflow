@@ -1,10 +1,12 @@
 
 #include <getopt.h>
-#include "simpleOpenReadCloseGen.cpp"
+#include "simpleOpenReadCloseGen.hpp"
 
 int main(int argc, char ** argv) {
 
-    m_filename = "None";
+//m_filename = "/home/arezaii/pfdir/parflow/test/washita/NLDAS/NLDAS.Temp.000001_to_000024.pfb.00000";
+
+m_filename = "None";
     int c;
     int err=0;
     while( ( c = getopt (argc, argv, "i:") ) != -1 )
@@ -20,7 +22,10 @@ int main(int argc, char ** argv) {
         }
     }
 
-    run_generated_code();
+    #include "simpleOpenReadCloseGen.cpp"
+
 
     return 0;
+
+
 }
