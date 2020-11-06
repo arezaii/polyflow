@@ -79,11 +79,9 @@ std::string m_filename;
                       m_data[index+j] = *(double*)(&tmp);}
 
 
-
-#define S5(){if(m_fp){std::fclose(m_fp);} \
+#define S5(){ \
             for (int m =0;m<2*m_nx;m++){ \
                 std::cout<<"Cell "<<m<<": " <<m_data[m]<<std::endl; \
             }                               \
-            free(m_data);\
             std::cout<<"End Reading PFB File "<<m_filename<<"."<<std::endl;}
 #endif //POLYFLOW_SIMPLEOPENREADCLOSEGEN_HPP

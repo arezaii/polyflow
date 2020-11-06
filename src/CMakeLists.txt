@@ -8,3 +8,8 @@ add_custom_target(polyflow_build
 				  COMMAND iscc < ${CMAKE_CURRENT_SOURCE_DIR}/simpleOpenReadCloseGen.iscc.txt > ${CMAKE_CURRENT_SOURCE_DIR}/simpleOpenReadCloseGen.cpp)
 				  
 add_dependencies(polyflow polyflow_build)
+
+add_custom_target(polyflow_write
+		COMMAND iscc < ${CMAKE_CURRENT_SOURCE_DIR}/simpleWriteFileGen.iscc.txt > ${CMAKE_CURRENT_SOURCE_DIR}/simpleWriteFileGen.cpp)
+
+add_dependencies(polyflow polyflow_write)

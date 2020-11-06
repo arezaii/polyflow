@@ -1,0 +1,84 @@
+Domain := [m_r,m_q,m_p,offset_z, offset_z_1, offset_y, offset_y_1, x_extent, offset_x, index] -> {
+    S10[];
+    S11[nsg_z,nsg_y,nsg_x] : 0<=nsg_z<m_r and 0<=nsg_y<m_q and 0<=nsg_x<m_p;
+    S12[nsg_z, nsg_y, nsg_x, iz, iy] : 0<=nsg_z<m_r and 0<=nsg_y<m_q and 0<=nsg_x<m_p and offset_z<=iz<offset_z_1 and offset_y<=iy<offset_y_1;
+    S13[nsg_z, nsg_y, nsg_x, iz, iy, j] : 0<=nsg_z<m_r and 0<=nsg_y<m_q and 0<=nsg_x<m_p and offset_z<=iz<offset_z_1 and offset_y<=iy<offset_y_1 and 0<=j<x_extent;
+    S14[nsg_z, nsg_y, nsg_x, iz, iy] : 0<=nsg_z<m_r and 0<=nsg_y<m_q and 0<=nsg_x<m_p and offset_z<=iz<offset_z_1 and offset_y<=iy<offset_y_1;
+    S15[nsg_z,nsg_y,nsg_x] : 0<=nsg_z<m_r and 0<=nsg_y<m_q and 0<=nsg_x<m_p;
+    S16[nsg_z] : 0<=nsg_z<m_r;
+    S17[];
+};
+
+Read := [m_r,m_q,m_p,offset_z, offset_z_1, offset_y, offset_y_1, x_extent, offset_x, index] -> {
+
+    S11[nsg_z,nsg_y,nsg_x] -> m_nx[0];
+	S11[nsg_z,nsg_y,nsg_x] -> m_ny[0];
+	S11[nsg_z,nsg_y,nsg_x] -> m_nz[0];
+    S12[nsg_z, nsg_y, nsg_x, iz, iy] -> m_data[index];
+	S13[nsg_z, nsg_y, nsg_x, iz, iy, j] -> buf[j];
+	S14[nsg_z, nsg_y, nsg_x, iz, iy] -> x_extent[0];
+	S14[nsg_z, nsg_y, nsg_x, iz, iy] -> writeBuf[0];
+	S15[nsg_z,nsg_y,nsg_x] -> fp[0];
+	S16[nsg_z] -> nsg[0];
+} * Domain;
+
+Write := [m_r,m_q,m_p,offset_z, offset_z_1, offset_y, offset_y_1, x_extent, offset_x, index] -> {
+    S10[] -> fp[0];
+	S10[] -> m_X[0];
+	S10[] -> m_Y[0];
+	S10[] -> m_Z[0];
+	S10[] -> m_nx[0];
+	S10[] -> m_ny[0];
+	S10[] -> m_nz[0];
+	S10[] -> m_dX[0];
+	S10[] -> m_dY[0];
+	S10[] -> m_dZ[0];
+	S10[] -> m_numSubgrids[0];
+	S10[] -> max_x_extent[0];
+	S10[] -> writeBuf[0];
+	S10[] -> nsg[0];
+	S10[] -> byte_offsets[0];
+	S10[] -> sg_count[0];
+	S11[nsg_z,nsg_y,nsg_x] -> x[0];
+	S11[nsg_z,nsg_y,nsg_x] -> y[0];
+	S11[nsg_z,nsg_y,nsg_x] -> z[0];
+	S11[nsg_z,nsg_y,nsg_x] -> x_extent[0];
+	S11[nsg_z,nsg_y,nsg_x] -> iz[0];
+	S11[nsg_z,nsg_y,nsg_x] -> iy[0];
+	S11[nsg_z,nsg_y,nsg_x] -> fp[0];
+	S12[nsg_z, nsg_y, nsg_x, iz, iy] -> index[0];
+	S12[nsg_z, nsg_y, nsg_x, iz, iy] -> buf[0];
+	S12[nsg_z, nsg_y, nsg_x, iz, iy] -> offset_x[0];
+	S13[nsg_z, nsg_y, nsg_x, iz, iy, j] -> writeBuf[j];
+	S14[nsg_z, nsg_y, nsg_x, iz, iy] -> written[0];
+	S15[nsg_z,nsg_y,nsg_x] -> byte_offsets[sg_count];
+	S15[nsg_z,nsg_y,nsg_x] -> sg_count[0];
+	S16[nsg_z] -> nsg[0];
+	S17[] -> fp[0];
+} * Domain;
+
+Schedule := [m_r,m_q,m_p,offset_z, offset_z_1, offset_y, offset_y_1, x_extent, offset_x, index] -> {
+    S10[] -> 								[0,0,0,0,0,0,0,0,0,0,0];
+    S11[nsg_z,nsg_y,nsg_x] -> 				[1,nsg_z,0,nsg_y,nsg_x,0,0,0,0,0,0];
+    S12[nsg_z, nsg_y, nsg_x, iz, iy] -> 		[1,nsg_z,0,nsg_y,nsg_x,1,iz,iy,0,0,0];
+    S13[nsg_z, nsg_y, nsg_x, iz, iy, j] -> 	[1,nsg_z,0,nsg_y,nsg_x,1,iz,iy,1,j,0];
+    S14[nsg_z, nsg_y, nsg_x, iz, iy] -> 		[1,nsg_z,0,nsg_y,nsg_x,1,iz,iy,2,0,0];
+    S15[nsg_z,nsg_y,nsg_x] -> 				[1,nsg_z,0,nsg_y,nsg_x,2,0,0,0,0,0];
+    S16[nsg_z] -> 							[1,nsg_z,1,0,0,0,0,0,0,0,0];
+    S17[] -> 								[3,0,0,0,0,0,0,0,0,0,0];
+};
+
+
+Before := Schedule << Schedule;
+
+
+RaW := (Write . (Read^-1)) * Before;
+WaW := (Write . (Write^-1)) * Before;
+WaR := (Read . (Write^-1)) * Before;
+
+IslSchedule := schedule Domain respecting (RaW+WaW+WaR) minimizing RaW;
+IslSchedule := IslSchedule + {}; # flatten the schedule tree
+
+IslBefore := IslSchedule << IslSchedule;
+
+codegen (Schedule * Domain);
