@@ -1,0 +1,31 @@
+Domain := [m_data_len] -> {
+    SA[m] : 0 <= m < m_data_len;
+};
+
+Read := [m_data_len] -> {
+    SA[m] -> m_data[m];
+    SA[m] -> cws_val[0];
+} * Domain;
+
+Write := [m_data_len] -> {
+    SA[m] -> m_data[m];
+} * Domain;
+
+Schedule := [m_data_len] -> {
+    SA[m] -> [m];
+};
+
+
+Before := Schedule << Schedule;
+
+
+RaW := (Write . (Read^-1)) * Before;
+WaW := (Write . (Write^-1)) * Before;
+WaR := (Read . (Write^-1)) * Before;
+
+IslSchedule := schedule Domain respecting (RaW+WaW+WaR) minimizing RaW;
+IslSchedule := IslSchedule + {}; # flatten the schedule tree
+
+IslBefore := IslSchedule << IslSchedule;
+
+codegen (Schedule * Domain);

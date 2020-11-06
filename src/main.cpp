@@ -2,16 +2,19 @@
 #include <getopt.h>
 #include "simpleOpenReadCloseGen.hpp"
 #include "simpleWriteFileGen.hpp"
+#include "addToGridGen.hpp"
 
 int calcOffset(int extent, int block_count, int block_idx);
 int calcExtent(int extent, int block_count, int block_idx);
 int main(int argc, char ** argv) {
-
+    int cws_val;
 m_filename = "None";
 outfilename = "None";
+cws_val = 0;
+
     int c;
     int err=0;
-    while( ( c = getopt (argc, argv, "i:o:") ) != -1 )
+    while( ( c = getopt (argc, argv, "i:o:s:") ) != -1 )
     {
         switch(c)
         {
@@ -20,6 +23,8 @@ outfilename = "None";
                 break;
             case 'o':
                 if(optarg) outfilename = optarg;
+            case 's':
+                if(optarg) cws_val = atoi(optarg);
             case '?':
                 err =1;
                 break;
@@ -27,6 +32,13 @@ outfilename = "None";
     }
 
     #include "simpleOpenReadCloseGen.cpp"
+
+    #include "addToGridGen.cpp"
+
+    for (int m =0;m<2*m_nx;m++){ \
+                std::cout<<"Cell "<<m<<": " <<m_data[m]<<std::endl; \
+            }                               \
+            std::cout<<"End Reading PFB File "<<m_filename<<"."<<std::endl;
 
     #include "simpleWriteFileGen.cpp"
 

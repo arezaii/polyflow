@@ -12,3 +12,6 @@ _deps
 build
 cmake-build-debug
 .idea
+addToGridGen.cpp
+simpleOpenReadCloseGen.cpp
+simpleWriteFileGen.cpp

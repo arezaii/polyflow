@@ -38,6 +38,7 @@ int read_count;
 uint64_t tmp;
 uint64_t* buf;
 std::string m_filename;
+long m_data_len;
 
 #define S0() {m_fp = fopen( m_filename.c_str(), "rb"); \
               std::cout << "Begin Reading PFB " << m_filename<<std::endl;\
@@ -50,8 +51,9 @@ std::string m_filename;
               READDOUBLE(m_dX,m_fp,errcheck);\
               READDOUBLE(m_dY,m_fp,errcheck);\
               READDOUBLE(m_dZ,m_fp,errcheck);\
-              READINT(m_numSubgrids,m_fp,errcheck);\
-              m_data = (double*)std::malloc(sizeof(double)*m_nx*m_ny*m_nz);}
+              READINT(m_numSubgrids,m_fp,errcheck);    \
+              m_data_len = m_nx*m_ny*m_nz;              \
+              m_data = (double*)std::malloc(sizeof(double)*m_data_len);}
 #define S1(nsg){READINT(x,m_fp,errcheck);\
              READINT(y,m_fp,errcheck);\
              READINT(z,m_fp,errcheck);\
