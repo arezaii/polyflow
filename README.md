@@ -28,8 +28,10 @@ make
 The previous build step should have created the binary in a subdirectory `bin`
 
 ```shell script
-bin/polyflow -i <parflow_binary_file.pfb> -o <output_filename>
+bin/polyflow -i <parflow_binary_file.pfb> -o <output_filename> -s <cellwise_sum_value>
 ```
+
+where `cellwise_sum_value` is an integer value to add to every cell in `<parflow_binary_file.pfb>`
 
 ## Output
 
